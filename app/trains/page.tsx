@@ -119,6 +119,7 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
             </Link>
           </div>
         </div>
+      </div>
       )}
 
       <main className="flex-1 container px-4 py-6 max-w-4xl">
