@@ -38,7 +38,7 @@ function clamp(n: number): number {
   return Math.min(100, Math.max(0, n));
 }
 
-export function calculatePrediction(input: PredictionInput): Prediction {
+export function calculatePrediction(input: PredictionInput): Prediction | undefined {
   const {
     status,
     waitlistNumber,
@@ -53,6 +53,11 @@ export function calculatePrediction(input: PredictionInput): Prediction {
   let probability = 0;
   let confidence: 'High' | 'Medium' | 'Low' = 'Low';
   const factors: PredictionFactor[] = [];
+
+  // Enforce real data:
+  if (!status || status === 'UNKNOWN') {
+    return undefined; // No real live data available
+  }
 
   // ── 1. STATUS BASE ──────────────────────────────────────────────────────────
 

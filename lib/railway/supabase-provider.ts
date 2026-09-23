@@ -11,14 +11,14 @@
 import type { RailwayDataProvider, StationSearchOptions, TrainSearchOptions, HistoricalClearanceResult } from './provider.interface';
 import type { Station, Train, TrainResult } from '@/types';
 import { createAdminClient } from '@/lib/supabase/server';
-import { calculatePrediction } from '@/lib/prediction/engine';
+
 import { differenceInDays, parseISO } from 'date-fns';
 import type { Database } from '@/types/database';
 
 type DbStation = Database['public']['Tables']['stations']['Row'];
 type DbTrain = Database['public']['Tables']['trains']['Row'];
 type DbTrainStop = Database['public']['Tables']['train_stops']['Row'];
-type DbAvailability = Database['public']['Tables']['availability_snapshots']['Row'];
+
 type DbHistoricalOutcome = Database['public']['Tables']['historical_outcomes']['Row'];
 
 function mapStation(row: DbStation): Station {
@@ -78,7 +78,7 @@ export class SupabaseRailwayDataProvider implements RailwayDataProvider {
     const to = await this.getStation(toCode);
     if (!from || !to) return [];
 
-    const daysToJourney = date ? Math.max(0, differenceInDays(parseISO(date), new Date())) : 25;
+    // Unused when live availability is disabled: date, classCode, daysToJourney
 
     // Find trains that stop at both from and to stations (from before to)
     const { data: fromStopsRaw } = await db
@@ -105,85 +105,81 @@ export class SupabaseRailwayDataProvider implements RailwayDataProvider {
     const trainIds = connectingStops.map((s: DbTrainStop) => s.train_id);
     if (trainIds.length === 0) return [];
 
-    // Fetch availability snapshots for these trains
-    let availQuery = db
-      .from('availability_snapshots')
-      .select('*')
-      .in('train_id', trainIds)
-      .eq('from_station', from.id)
-      .eq('to_station', to.id);
-
-    if (date) availQuery = availQuery.eq('journey_date', date) as unknown as typeof availQuery;
-    if (classCode) availQuery = availQuery.eq('class_code', classCode) as unknown as typeof availQuery;
-
-    const { data: availRowsRaw } = await availQuery;
-    const availRows = (availRowsRaw ?? []) as DbAvailability[];
-    
-    if (availRows.length === 0) return [];
-
     // Fetch train info
     const { data: trainRowsRaw } = await db
       .from('trains')
       .select('*')
-      .in('id', trainIds);
+      .in('id', trainIds)
+      .eq('is_active', true);
+    
     const trainRows = (trainRowsRaw ?? []) as DbTrain[];
 
     const trainMap = new Map(trainRows.map((t: DbTrain) => [t.id, t]));
     const fromStopMap = new Map(connectingStops.map((s: DbTrainStop) => [s.train_id, s]));
 
-    return availRows.map((avail: DbAvailability) => {
-      const dbTrain = trainMap.get(avail.train_id ?? '');
+    // Get the requested day index (0 = Monday, 6 = Sunday)
+    let requestedDayIndex = -1;
+    if (date) {
+      const parsedDate = parseISO(date);
+      requestedDayIndex = parsedDate.getDay() === 0 ? 6 : parsedDate.getDay() - 1;
+    }
+
+    const results: TrainResult[] = [];
+
+    for (const trainId of trainIds) {
+      const dbTrain = trainMap.get(trainId);
+      if (!dbTrain) continue;
+
+      if (requestedDayIndex !== -1 && dbTrain.runs_on) {
+        if (dbTrain.runs_on[requestedDayIndex] === 'N') {
+          continue; // Train does not run on this day
+        }
+      }
+
       const train: Train = {
-        id: dbTrain?.id ?? avail.train_id ?? '',
-        train_number: dbTrain?.train_number ?? '',
-        train_name: dbTrain?.train_name ?? '',
-        train_type: dbTrain?.train_type ?? '',
-        source_station: dbTrain?.source_station ?? '',
-        destination_station: dbTrain?.destination_station ?? '',
-        runs_on: dbTrain?.runs_on ?? '',
+        id: dbTrain.id,
+        train_number: dbTrain.train_number,
+        train_name: dbTrain.train_name,
+        train_type: dbTrain.train_type ?? '',
+        source_station: dbTrain.source_station ?? '',
+        destination_station: dbTrain.destination_station ?? '',
+        runs_on: dbTrain.runs_on ?? '',
       };
 
       const fromStop = fromStopMap.get(train.id);
       const toStop = toStopMap.get(train.id);
+      
       const dep = fromStop?.departure_time?.slice(0, 5) ?? '—';
       const arr = toStop?.arrival_time?.slice(0, 5) ?? '—';
 
-      const prediction = calculatePrediction({
-        trainId: train.id,
-        journeyDate: date ?? avail.journey_date,
-        classCode: avail.class_code,
-        quota: avail.quota,
-        status: avail.status,
-        waitlistNumber: avail.waitlist_number ?? undefined,
-        racNumber: avail.rac_number ?? undefined,
-        daysToJourney,
-      });
+      // Calculate duration
+      let durationStr = '—';
+      if (fromStop?.departure_time && toStop?.arrival_time) {
+        const [dh, dm] = fromStop.departure_time.split(':').map(Number);
+        const [ah, am] = toStop.arrival_time.split(':').map(Number);
+        
+        let minutesDiff = (ah * 60 + am) - (dh * 60 + dm);
+        if (minutesDiff < 0) {
+          // Crosses midnight
+          minutesDiff += 24 * 60;
+        }
+        
+        const h = Math.floor(minutesDiff / 60);
+        const m = minutesDiff % 60;
+        durationStr = `${h}h ${m}m`;
+      }
 
-      return {
+      results.push({
         train,
         fromStation: from,
         toStation: to,
         departureTime: dep,
         arrivalTime: arr,
-        duration: '—', // TODO: compute from stop times
-        availability: {
-          id: avail.id,
-          train_id: avail.train_id ?? '',
-          from_station: avail.from_station ?? '',
-          to_station: avail.to_station ?? '',
-          journey_date: avail.journey_date,
-          class_code: avail.class_code,
-          quota: avail.quota,
-          status: avail.status as TrainResult['availability']['status'],
-          waitlist_number: avail.waitlist_number ?? undefined,
-          rac_number: avail.rac_number ?? undefined,
-          available_count: avail.available_count ?? undefined,
-          fare: avail.fare ?? 0,
-          captured_at: avail.captured_at,
-        },
-        prediction,
-      };
-    });
+        duration: durationStr,
+      });
+    }
+
+    return results;
   }
 
   async getHistoricalClearance(

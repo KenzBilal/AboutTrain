@@ -31,6 +31,7 @@ export interface AvailabilitySnapshot {
   available_count?: number;
   fare: number;
   captured_at: string;
+  source: string; // E.g. 'Live API', 'Mock', 'Supabase Cache'
 }
 
 export interface Prediction {
@@ -50,6 +51,26 @@ export interface PredictionFactor {
   description: string;
 }
 
+export interface CollectionWatchlist {
+  id: string;
+  train_id: string;
+  from_station: string;
+  to_station: string;
+  journey_date: string;
+  class_code: string;
+  quota: string;
+  active: boolean;
+  created_at: string;
+}
+
+export interface CollectionLog {
+  id: string;
+  watchlist_id: string;
+  status: 'SUCCESS' | 'FAILURE';
+  error_message?: string;
+  captured_at: string;
+}
+
 export interface JourneyQuery {
   from: string; // station code
   to: string;   // station code
@@ -66,6 +87,6 @@ export interface TrainResult {
   departureTime: string;
   arrivalTime: string;
   duration: string;
-  availability: AvailabilitySnapshot;
+  availability?: AvailabilitySnapshot;
   prediction?: Prediction;
 }

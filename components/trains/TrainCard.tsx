@@ -17,7 +17,7 @@ export function TrainCard({ result }: TrainCardProps) {
 
   // Calculate prediction on the fly if not provided
   let prediction = result.prediction;
-  if (!prediction) {
+  if (!prediction && availability) {
     const daysToJourney = differenceInDays(parseISO(availability.journey_date), new Date());
     prediction = calculatePrediction({
       trainId: train.id,
@@ -31,9 +31,10 @@ export function TrainCard({ result }: TrainCardProps) {
     });
   }
 
-  const isConfirmed = availability.status === 'CNF' || availability.status === 'AVAILABLE';
+  const isConfirmed = availability?.status === 'CNF' || availability?.status === 'AVAILABLE';
 
   const getStatusBadge = () => {
+    if (!availability) return <Badge variant="secondary">Live availability unavailable</Badge>;
     switch (availability.status) {
       case 'CNF':
         return <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 hover:bg-emerald-100">Confirmed</Badge>;
@@ -71,12 +72,19 @@ export function TrainCard({ result }: TrainCardProps) {
                   Runs {train.runs_on}
                 </div>
               </div>
-              <div className="text-right">
-                <div className="flex items-center text-sm font-semibold text-foreground">
+              <div className="text-right flex flex-col items-end">
+                <div className="flex items-center justify-end text-sm font-semibold text-foreground">
                   <IndianRupee className="h-3.5 w-3.5" />
-                  {availability.fare.toLocaleString('en-IN')}
+                  {availability ? availability.fare.toLocaleString('en-IN') : '—'}
                 </div>
-                <div className="text-[10px] text-muted-foreground mt-0.5">{availability.class_code} · {availability.quota} quota</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5">
+                  {availability ? `${availability.class_code} · ${availability.quota} quota` : 'Live prices unavailable'}
+                </div>
+                {availability && (
+                  <div className="text-[9px] text-muted-foreground/70 mt-1 uppercase tracking-wider">
+                    {availability.source}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -119,17 +127,21 @@ export function TrainCard({ result }: TrainCardProps) {
                 <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2">
                   Seat availability confirmed. Book promptly on IRCTC to secure your ticket.
                 </div>
-              ) : (
+              ) : prediction ? (
                 <PredictionGauge
                   probability={prediction.predicted_probability}
                   confidence={prediction.confidence}
                 />
+              ) : (
+                <div className="text-sm text-muted-foreground bg-secondary/50 rounded-lg px-3 py-2">
+                  No prediction available. Live data needed.
+                </div>
               )}
             </div>
 
             <div className="pt-4 mt-auto">
               <Link
-                href={`/trains/${train.id}?date=${availability.journey_date}&class=${availability.class_code}&quota=${availability.quota}&from=${fromStation.station_code}&to=${toStation.station_code}`}
+                href={`/trains/${train.id}?from=${fromStation.station_code}&to=${toStation.station_code}${availability ? `&date=${availability.journey_date}&class=${availability.class_code}&quota=${availability.quota}` : ''}`}
                 className={buttonVariants({ className: "w-full text-center" })}
               >
                 Full Analysis

@@ -15,6 +15,9 @@ import type { RailwayDataProvider } from './provider.interface';
 import { isDemoMode } from '@/lib/env';
 import { MockRailwayDataProvider } from './mock-provider';
 import { SupabaseRailwayDataProvider } from './supabase-provider';
+import type { AvailabilityProvider } from './availability.interface';
+import { MockAvailabilityProvider } from './mock-availability';
+import { RailRadarAvailabilityProvider } from './railradar-availability';
 
 let _provider: RailwayDataProvider | null = null;
 
@@ -33,4 +36,23 @@ export function getDataProvider(): RailwayDataProvider {
 /** Reset provider (useful in tests) */
 export function resetDataProvider() {
   _provider = null;
+  _availProvider = null;
+}
+
+let _availProvider: AvailabilityProvider | null = null;
+
+export function getAvailabilityProvider(): AvailabilityProvider | null {
+  if (_availProvider) return _availProvider;
+
+  if (isDemoMode()) {
+    _availProvider = new MockAvailabilityProvider();
+  } else if (process.env.RAILRADAR_API_KEY) {
+    _availProvider = new RailRadarAvailabilityProvider(process.env.RAILRADAR_API_KEY);
+  } else {
+    // No legitimate live API credentials configured
+    // Wait for legitimate API implementation
+    _availProvider = null; 
+  }
+
+  return _availProvider;
 }

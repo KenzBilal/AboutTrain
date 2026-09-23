@@ -148,15 +148,15 @@ export default async function TrainDetailsPage({ params, searchParams }: PagePro
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">
-                  Why AboutTrain estimates {prediction.predicted_probability}%
+                  Why AboutTrain estimates {prediction?.predicted_probability ?? '--'}%
                 </CardTitle>
                 <CardDescription className="space-y-1">
-                  <span>Confidence: <strong>{prediction.confidence}</strong></span>
+                  <span>Confidence: <strong>{prediction?.confidence ?? 'N/A'}</strong></span>
                   {formattedDate && <span className="ml-3">Journey: {formattedDate}</span>}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <PredictionExplainer factors={prediction.factors} />
+                {prediction ? <PredictionExplainer factors={prediction.factors} /> : <p className="text-sm text-muted-foreground">Live data unavailable, cannot predict.</p>}
 
                 {/* Historical data card */}
                 {historical && (
@@ -208,7 +208,7 @@ export default async function TrainDetailsPage({ params, searchParams }: PagePro
                     : altAvail.status === 'WL' ? `WL ${altAvail.waitlist_number}`
                     : altAvail.status;
 
-                  const probColor = altPred.predicted_probability >= 70 ? 'text-emerald-700'
+                  const probColor = !altPred ? 'text-muted-foreground' : altPred.predicted_probability >= 70 ? 'text-emerald-700'
                     : altPred.predicted_probability >= 40 ? 'text-amber-700'
                     : 'text-rose-700';
 
@@ -229,7 +229,7 @@ export default async function TrainDetailsPage({ params, searchParams }: PagePro
                       <div className="text-right shrink-0">
                         <div className="text-sm font-medium">{statusLabel}</div>
                         <div className={`text-xs mt-0.5 font-semibold ${probColor}`}>
-                          ~{altPred.predicted_probability}% est.
+                          {altPred ? `~${altPred.predicted_probability}% est.` : 'No prediction'}
                         </div>
                       </div>
                     </Link>

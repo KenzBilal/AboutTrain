@@ -131,6 +131,7 @@ export const mockAvailability: AvailabilitySnapshot[] = [
     waitlist_number: 18,
     fare: 1850,
     captured_at: new Date().toISOString(),
+    source: 'Mock Data',
   },
   {
     id: 'a2',
@@ -144,6 +145,7 @@ export const mockAvailability: AvailabilitySnapshot[] = [
     waitlist_number: 45,
     fare: 720,
     captured_at: new Date().toISOString(),
+    source: 'Mock Data',
   },
   {
     id: 'a3',
@@ -157,6 +159,7 @@ export const mockAvailability: AvailabilitySnapshot[] = [
     rac_number: 12,
     fare: 1920,
     captured_at: new Date().toISOString(),
+    source: 'Mock Data',
   },
   {
     id: 'a4',
@@ -170,6 +173,7 @@ export const mockAvailability: AvailabilitySnapshot[] = [
     available_count: 6,
     fare: 2570,
     captured_at: new Date().toISOString(),
+    source: 'Mock Data',
   },
   {
     id: 'a5',
@@ -183,6 +187,7 @@ export const mockAvailability: AvailabilitySnapshot[] = [
     available_count: 12,
     fare: 2050,
     captured_at: new Date().toISOString(),
+    source: 'Mock Data',
   },
 ];
 

@@ -166,6 +166,32 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['model_versions']['Row'], 'id' | 'created_at'> & { id?: string };
         Update: Partial<Database['public']['Tables']['model_versions']['Insert']>;
       };
+      collection_watchlist: {
+        Row: {
+          id: string;
+          train_id: string;
+          from_station: string;
+          to_station: string;
+          journey_date: string;
+          class_code: string;
+          quota: string;
+          active: boolean;
+          created_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['collection_watchlist']['Row'], 'id' | 'created_at' | 'active'> & { id?: string; created_at?: string; active?: boolean };
+        Update: Partial<Database['public']['Tables']['collection_watchlist']['Insert']>;
+      };
+      collection_logs: {
+        Row: {
+          id: string;
+          watchlist_id: string;
+          status: string;
+          error_message: string | null;
+          captured_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['collection_logs']['Row'], 'id' | 'captured_at' | 'error_message'> & { id?: string; captured_at?: string; error_message?: string };
+        Update: Partial<Database['public']['Tables']['collection_logs']['Insert']>;
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

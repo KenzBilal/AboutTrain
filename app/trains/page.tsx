@@ -4,7 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { parseISO, format } from "date-fns";
 import Link from "next/link";
 import { AlertCircle, Clock, Info } from "lucide-react";
-import { getDataProvider } from "@/lib/railway/provider";
+import { getDataProvider, getAvailabilityProvider } from "@/lib/railway/provider";
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -44,6 +44,28 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
         classCode: classCode || undefined,
         quota,
       });
+
+      const availProvider = getAvailabilityProvider();
+      if (availProvider && dateStr && classCode) {
+        // Fetch live availability for all trains concurrently
+        await Promise.all(results.map(async (result) => {
+          try {
+            const avail = await availProvider.getAvailability({
+              trainId: result.train.id,
+              fromStation: fromCode,
+              toStation: toCode,
+              journeyDate: dateStr,
+              classCode,
+              quota,
+            });
+            if (avail) {
+              result.availability = avail;
+            }
+          } catch (e) {
+            console.error(`Failed to fetch availability for ${result.train.id}`, e);
+          }
+        }));
+      }
     } catch (err) {
       console.error('[trains/search] Error:', err);
       searchError = 'Search failed. Please try again.';
@@ -121,7 +143,7 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
         <div className="flex items-start gap-2 text-xs text-muted-foreground border border-border rounded-lg px-4 py-2.5 mb-5">
           <Clock className="h-3.5 w-3.5 mt-0.5 shrink-0" />
           <span>
-            Availability and confirmation estimates are {provider.isDemo ? <strong>illustrative demo data</strong> : <>sourced from <strong>{provider.providerName}</strong></>}.
+            Availability and confirmation estimates are {getAvailabilityProvider()?.isDemo ? <strong>illustrative demo data</strong> : <>sourced from <strong>{getAvailabilityProvider()?.providerName || 'Live IRCTC/NTES providers'}</strong></>}.
             Estimates are not guarantees. Always verify on{' '}
             <a href="https://www.irctc.co.in" target="_blank" rel="noopener noreferrer" className="underline text-primary">
               IRCTC
@@ -170,7 +192,7 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
         {results.length > 0 && (
           <div className="space-y-4">
             {results.map((result) => (
-              <TrainCard key={result.availability.id} result={result} />
+              <TrainCard key={result.availability?.id ?? result.train.id} result={result} />
             ))}
           </div>
         )}

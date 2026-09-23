@@ -28,6 +28,15 @@ export async function POST(request: NextRequest) {
     // Based on the type, route to the correct table
     switch (type) {
       case 'availability_snapshots':
+        // Make idempotent: delete older snapshots for the same journey
+        for (const item of data) {
+          await db.from('availability_snapshots').delete().match({
+            train_id: item.train_id,
+            journey_date: item.journey_date,
+            class_code: item.class_code,
+            quota: item.quota
+          });
+        }
         const { error: availError } = await db.from('availability_snapshots').insert(data);
         if (availError) throw availError;
         break;
@@ -54,8 +63,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true, ingested_records: data.length });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Ingest API] Error:', error);
-    return NextResponse.json({ error: error.message || 'Ingestion failed' }, { status: 500 });
+    return NextResponse.json({ error: (error as Error).message || 'Ingestion failed' }, { status: 500 });
   }
 }
