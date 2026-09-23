@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/navigation/Navbar";
 import { TrainCard } from "@/components/trains/TrainCard";
 import { PredictionExplainer } from "@/components/prediction/PredictionExplainer";
-import { getDataProvider } from "@/lib/railway/provider";
+import { getDataProvider, getAvailabilityProvider } from "@/lib/railway/provider";
 import { mockTrains, mockAvailability } from "@/lib/railway/mock-data";
 import { calculatePrediction } from "@/lib/prediction/engine";
 import { differenceInDays, parseISO, format } from "date-fns";
@@ -28,6 +28,7 @@ export default async function TrainDetailsPage({ params, searchParams }: PagePro
   const toCode = typeof sp.to === 'string' ? sp.to : '';
 
   const provider = getDataProvider();
+  const availProvider = getAvailabilityProvider();
 
   // Load stations
   const [fromStation, toStation] = await Promise.all([
@@ -35,52 +36,90 @@ export default async function TrainDetailsPage({ params, searchParams }: PagePro
     toCode ? provider.getStation(toCode) : null,
   ]);
 
-  // Find train — try mock data first (works in demo and production)
-  const mockTrain = mockTrains.find(t => t.id === trainId);
-  const train = mockTrain ?? mockTrains[0];
+  const journeyDate = dateStr || format(new Date(), 'yyyy-MM-dd');
+  const daysToJourney = Math.max(0, differenceInDays(parseISO(journeyDate), new Date()));
 
-  // Find availability for this train/class
-  const avail =
-    mockAvailability.find(a => a.train_id === train.id && a.class_code === classCode) ??
-    mockAvailability.find(a => a.train_id === train.id) ??
-    mockAvailability[0];
+  // 1. Find train using provider
+  let searchResults: TrainResult[] = [];
+  if (fromCode && toCode) {
+    try {
+      searchResults = await provider.searchTrains({
+        fromCode,
+        toCode,
+        date: journeyDate,
+        classCode,
+        quota
+      });
+    } catch (e) {
+      console.error('Failed to search trains on detail page', e);
+    }
+  }
 
-  const resolvedFrom = fromStation ?? { id: avail.from_station, station_code: fromCode || 'PGW', station_name: 'Phagwara Junction', city: 'Phagwara', state: 'Punjab', zone: 'NR' };
-  const resolvedTo = toStation ?? { id: avail.to_station, station_code: toCode || 'BCT', station_name: 'Mumbai Central', city: 'Mumbai', state: 'Maharashtra', zone: 'WR' };
+  let result = searchResults.find(r => r.train.id === trainId);
 
-  const journeyDate = dateStr || avail.journey_date;
-  const daysToJourney = dateStr ? Math.max(0, differenceInDays(parseISO(dateStr), new Date())) : 30;
+  // Fallback if not found via search (e.g., direct link without proper from/to or provider down)
+  if (!result) {
+    const mockTrain = mockTrains.find(t => t.id === trainId) ?? mockTrains[0];
+    const resolvedFrom = fromStation ?? { id: 'PGW', station_code: fromCode || 'PGW', station_name: fromCode || 'Unknown', city: '', state: '', zone: '' };
+    const resolvedTo = toStation ?? { id: 'BCT', station_code: toCode || 'BCT', station_name: toCode || 'Unknown', city: '', state: '', zone: '' };
+    
+    result = {
+      train: mockTrain,
+      fromStation: resolvedFrom,
+      toStation: resolvedTo,
+      departureTime: "09:12",
+      arrivalTime: "14:35 +1",
+      duration: "29h 23m",
+    };
+  }
 
-  // Get historical clearance for this train/class
-  const historical = await provider.getHistoricalClearance(train.id, classCode, quota);
+  // 2. Find availability
+  let avail = null;
+  if (availProvider) {
+    try {
+      avail = await availProvider.getAvailability({
+        trainId: result.train.train_number, // provider needs train number/id
+        fromStation: result.fromStation.station_code,
+        toStation: result.toStation.station_code,
+        journeyDate,
+        classCode,
+        quota
+      });
+    } catch (e) {
+      console.error('Failed to fetch availability', e);
+    }
+  }
+
+  // Fallback to mock availability if no live provider or if it failed
+  if (!avail) {
+    avail = mockAvailability.find(a => a.train_id === result!.train.id && a.class_code === classCode) ?? mockAvailability[0];
+  }
+
+  result.availability = { ...avail, journey_date: journeyDate, class_code: classCode, quota };
+
+  // 3. Get historical clearance
+  const historical = await provider.getHistoricalClearance(result.train.id, classCode, quota);
 
   const prediction = calculatePrediction({
-    trainId: train.id,
+    trainId: result.train.id,
     journeyDate,
     classCode,
     quota,
-    status: avail.status,
-    waitlistNumber: avail.waitlist_number,
-    racNumber: avail.rac_number,
+    status: result.availability.status,
+    waitlistNumber: result.availability.waitlist_number,
+    racNumber: result.availability.rac_number,
     daysToJourney,
     historicalClearanceRate: historical?.clearanceRate,
     historicalSampleCount: historical?.totalSamples,
   });
 
-  const result: TrainResult = {
-    train,
-    fromStation: resolvedFrom,
-    toStation: resolvedTo,
-    departureTime: "09:12",
-    arrivalTime: "14:35 +1",
-    duration: "29h 23m",
-    availability: { ...avail, journey_date: journeyDate, class_code: classCode, quota },
-    prediction,
-  };
+  result.prediction = prediction;
 
-  // Alternatives: other trains in mock data for same route
+  const { train, fromStation: resolvedFrom, toStation: resolvedTo } = result;
+
+  // Alternatives: keep simple fallback for UI purposes
   const alternatives = mockAvailability
-    .filter(a => a.train_id !== train.id && a.from_station === avail.from_station)
+    .filter(a => a.train_id !== result!.train.id && a.from_station === avail!.from_station)
     .map(a => {
       const altTrain = mockTrains.find(t => t.id === a.train_id)!;
       const altPred = calculatePrediction({
@@ -113,14 +152,14 @@ export default async function TrainDetailsPage({ params, searchParams }: PagePro
         </div>
 
         {/* Disclaimer */}
-        <div className="flex items-start gap-2 text-xs text-muted-foreground bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 mb-5">
-          <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-amber-600" />
-          <span className="text-amber-800">
-            <strong>Note:</strong> All availability, timing, and prediction data shown is illustrative.
-            Estimates are not guarantees. Verify on{" "}
+        <div className="flex items-start gap-2 text-xs text-muted-foreground border border-border rounded-lg px-4 py-2.5 mb-5">
+          <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+          <span>
+            <strong>Note:</strong> Availability data may be sourced from third-party railway providers and predictions are estimates, not guarantees. Verify on{" "}
             <a href="https://www.irctc.co.in" target="_blank" rel="noopener noreferrer" className="underline font-medium">
               IRCTC <ExternalLink className="h-2.5 w-2.5 inline" />
-            </a>.
+            </a>{" "}
+            before travel.
           </span>
         </div>
 
