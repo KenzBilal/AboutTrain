@@ -192,7 +192,11 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
         {results.length > 0 && (
           <div className="space-y-4">
             {results.map((result) => (
-              <TrainCard key={result.availability?.id ?? result.train.id} result={result} />
+              <TrainCard 
+                key={result.availability?.id ?? result.train.id} 
+                result={result} 
+                searchContext={{ date: dateStr, classCode, quota }}
+              />
             ))}
           </div>
         )}

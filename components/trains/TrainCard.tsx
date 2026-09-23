@@ -10,9 +10,14 @@ import { differenceInDays, parseISO } from "date-fns";
 
 interface TrainCardProps {
   result: TrainResult;
+  searchContext?: {
+    date: string;
+    classCode: string;
+    quota: string;
+  };
 }
 
-export function TrainCard({ result }: TrainCardProps) {
+export function TrainCard({ result, searchContext }: TrainCardProps) {
   const { train, fromStation, toStation, departureTime, arrivalTime, duration, availability } = result;
 
   // Calculate prediction on the fly if not provided
@@ -141,7 +146,7 @@ export function TrainCard({ result }: TrainCardProps) {
 
             <div className="pt-4 mt-auto">
               <Link
-                href={`/trains/${train.id}?from=${fromStation.station_code}&to=${toStation.station_code}${availability ? `&date=${availability.journey_date}&class=${availability.class_code}&quota=${availability.quota}` : ''}`}
+                href={`/trains/${train.id}?from=${fromStation.station_code}&to=${toStation.station_code}&date=${availability?.journey_date || searchContext?.date || ''}&class=${availability?.class_code || searchContext?.classCode || ''}&quota=${availability?.quota || searchContext?.quota || ''}`}
                 className={buttonVariants({ className: "w-full text-center" })}
               >
                 Full Analysis

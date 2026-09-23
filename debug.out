@@ -1,0 +1,906 @@
+{
+  '$$typeof': Symbol(react.transitional.element),
+  type: 'div',
+  key: null,
+  props: {
+    className: 'flex min-h-screen flex-col bg-secondary/30',
+    children: [
+      {
+        '$$typeof': Symbol(react.transitional.element),
+        type: [Function: Navbar],
+        key: null,
+        props: {},
+        _owner: null,
+        _store: {}
+      },
+      {
+        '$$typeof': Symbol(react.transitional.element),
+        type: 'main',
+        key: null,
+        props: {
+          className: 'flex-1 container px-4 py-6 max-w-4xl',
+          children: [
+            {
+              '$$typeof': Symbol(react.transitional.element),
+              type: 'div',
+              key: null,
+              props: {
+                className: 'mb-5',
+                children: {
+                  '$$typeof': Symbol(react.transitional.element),
+                  type: <ref *1> {
+                    '$$typeof': Symbol(react.forward_ref),
+                    render: [Function: LinkComponent],
+                    default: [Circular *1],
+                    useLinkStatus: [Function: useLinkStatus]
+                  },
+                  key: null,
+                  props: {
+                    href: '/trains?from=XXX&to=YYY&date=2026-10-15&class=3A&quota=GN',
+                    className: "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5 text-muted-foreground hover:text-foreground gap-1.5 pl-0",
+                    children: [
+                      {
+                        '$$typeof': Symbol(react.transitional.element),
+                        type: {
+                          '$$typeof': Symbol(react.forward_ref),
+                          render: [Function: ArrowLeft] {
+                            displayName: 'ArrowLeft'
+                          }
+                        },
+                        key: null,
+                        props: { className: 'h-4 w-4' },
+                        _owner: null,
+                        _store: {}
+                      },
+                      ' Back to Results'
+                    ]
+                  },
+                  _owner: null,
+                  _store: {}
+                }
+              },
+              _owner: null,
+              _store: {}
+            },
+            {
+              '$$typeof': Symbol(react.transitional.element),
+              type: 'div',
+              key: null,
+              props: {
+                className: 'flex items-start gap-2 text-xs text-muted-foreground border border-border rounded-lg px-4 py-2.5 mb-5',
+                children: [
+                  {
+                    '$$typeof': Symbol(react.transitional.element),
+                    type: {
+                      '$$typeof': Symbol(react.forward_ref),
+                      render: [Function: CircleAlert] {
+                        displayName: 'CircleAlert'
+                      }
+                    },
+                    key: null,
+                    props: { className: 'h-3.5 w-3.5 mt-0.5 shrink-0' },
+                    _owner: null,
+                    _store: {}
+                  },
+                  {
+                    '$$typeof': Symbol(react.transitional.element),
+                    type: 'span',
+                    key: null,
+                    props: {
+                      children: [
+                        {
+                          '$$typeof': Symbol(react.transitional.element),
+                          type: 'strong',
+                          key: null,
+                          props: { children: 'Note:' },
+                          _owner: null,
+                          _store: {}
+                        },
+                        ' Availability data may be sourced from third-party railway providers and predictions are estimates, not guarantees. Verify on',
+                        ' ',
+                        {
+                          '$$typeof': Symbol(react.transitional.element),
+                          type: 'a',
+                          key: null,
+                          props: {
+                            href: 'https://www.irctc.co.in',
+                            target: '_blank',
+                            rel: 'noopener noreferrer',
+                            className: 'underline font-medium',
+                            children: [
+                              'IRCTC ',
+                              {
+                                '$$typeof': Symbol(react.transitional.element),
+                                type: {
+                                  '$$typeof': Symbol(react.forward_ref),
+                                  render: [Function: ExternalLink] {
+                                    displayName: 'ExternalLink'
+                                  }
+                                },
+                                key: null,
+                                props: { className: 'h-2.5 w-2.5 inline' },
+                                _owner: null,
+                                _store: {}
+                              }
+                            ]
+                          },
+                          _owner: null,
+                          _store: {}
+                        },
+                        ' ',
+                        'before travel.'
+                      ]
+                    },
+                    _owner: null,
+                    _store: {}
+                  }
+                ]
+              },
+              _owner: null,
+              _store: {}
+            },
+            {
+              '$$typeof': Symbol(react.transitional.element),
+              type: 'div',
+              key: null,
+              props: {
+                className: 'mb-6',
+                children: {
+                  '$$typeof': Symbol(react.transitional.element),
+                  type: [Function: TrainCard],
+                  key: null,
+                  props: {
+                    result: {
+                      train: {
+                        id: 't1',
+                        train_number: '12926',
+                        train_name: 'Paschim Express',
+                        train_type: 'Superfast',
+                        source_station: 'ASR',
+                        destination_station: 'BCT',
+                        runs_on: 'Daily'
+                      },
+                      fromStation: {
+                        id: 'PGW',
+                        station_code: 'XXX',
+                        station_name: 'XXX',
+                        city: '',
+                        state: '',
+                        zone: ''
+                      },
+                      toStation: {
+                        id: 'BCT',
+                        station_code: 'YYY',
+                        station_name: 'YYY',
+                        city: '',
+                        state: '',
+                        zone: ''
+                      },
+                      departureTime: '09:12',
+                      arrivalTime: '14:35 +1',
+                      duration: '29h 23m',
+                      availability: {
+                        id: 'mock-avail-12926-2026-10-15-3A-GN',
+                        train_id: '12926',
+                        from_station: 'XXX',
+                        to_station: 'YYY',
+                        journey_date: '2026-10-15',
+                        class_code: '3A',
+                        quota: 'GN',
+                        status: 'REGRET',
+                        available_count: undefined,
+                        waitlist_number: undefined,
+                        rac_number: undefined,
+                        fare: 2150,
+                        captured_at: '2026-09-23T19:18:10.481Z',
+                        source: 'Mock Provider'
+                      },
+                      prediction: {
+                        train_id: 't1',
+                        journey_date: '2026-10-15',
+                        class_code: '3A',
+                        quota: 'GN',
+                        predicted_probability: 0,
+                        confidence: 'High',
+                        factors: [
+                          {
+                            label: 'Current Status',
+                            impact: 'Negative',
+                            description: 'Booking is currently unavailable (REGRET). No seats or waitlist quota remaining.'
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  _owner: null,
+                  _store: {}
+                }
+              },
+              _owner: null,
+              _store: {}
+            },
+            {
+              '$$typeof': Symbol(react.transitional.element),
+              type: [Function: Tabs],
+              key: null,
+              props: {
+                defaultValue: 'analysis',
+                className: 'w-full',
+                children: [
+                  {
+                    '$$typeof': Symbol(react.transitional.element),
+                    type: [Function: TabsList],
+                    key: null,
+                    props: {
+                      className: 'border-b w-full rounded-none h-auto p-0 bg-transparent justify-start gap-0 mb-0',
+                      children: [
+                        {
+                          '$$typeof': Symbol(react.transitional.element),
+                          type: [Function: TabsTrigger],
+                          key: null,
+                          props: {
+                            value: 'analysis',
+                            className: 'rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2.5 text-sm',
+                            children: [
+                              {
+                                '$$typeof': Symbol(react.transitional.element),
+                                type: {
+                                  '$$typeof': Symbol(react.forward_ref),
+                                  render: [Function: TrendingUp] {
+                                    displayName: 'TrendingUp'
+                                  }
+                                },
+                                key: null,
+                                props: { className: 'w-4 h-4 mr-1.5' },
+                                _owner: null,
+                                _store: {}
+                              },
+                              ' Analysis'
+                            ]
+                          },
+                          _owner: null,
+                          _store: {}
+                        },
+                        {
+                          '$$typeof': Symbol(react.transitional.element),
+                          type: [Function: TabsTrigger],
+                          key: null,
+                          props: {
+                            value: 'alternatives',
+                            className: 'rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2.5 text-sm',
+                            children: [
+                              {
+                                '$$typeof': Symbol(react.transitional.element),
+                                type: {
+                                  '$$typeof': Symbol(react.forward_ref),
+                                  render: [Function: TramFront] {
+                                    displayName: 'TramFront'
+                                  }
+                                },
+                                key: null,
+                                props: { className: 'w-4 h-4 mr-1.5' },
+                                _owner: null,
+                                _store: {}
+                              },
+                              ' Alternatives'
+                            ]
+                          },
+                          _owner: null,
+                          _store: {}
+                        },
+                        {
+                          '$$typeof': Symbol(react.transitional.element),
+                          type: [Function: TabsTrigger],
+                          key: null,
+                          props: {
+                            value: 'info',
+                            className: 'rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2.5 text-sm',
+                            children: [
+                              {
+                                '$$typeof': Symbol(react.transitional.element),
+                                type: {
+                                  '$$typeof': Symbol(react.forward_ref),
+                                  render: [Function: Info] {
+                                    displayName: 'Info'
+                                  }
+                                },
+                                key: null,
+                                props: { className: 'w-4 h-4 mr-1.5' },
+                                _owner: null,
+                                _store: {}
+                              },
+                              ' Train Info'
+                            ]
+                          },
+                          _owner: null,
+                          _store: {}
+                        }
+                      ]
+                    },
+                    _owner: null,
+                    _store: {}
+                  },
+                  {
+                    '$$typeof': Symbol(react.transitional.element),
+                    type: [Function: TabsContent],
+                    key: null,
+                    props: {
+                      value: 'analysis',
+                      className: 'mt-5 space-y-4',
+                      children: {
+                        '$$typeof': Symbol(react.transitional.element),
+                        type: [Function: Card],
+                        key: null,
+                        props: {
+                          children: [
+                            {
+                              '$$typeof': Symbol(react.transitional.element),
+                              type: [Function: CardHeader],
+                              key: null,
+                              props: {
+                                className: 'pb-3',
+                                children: [
+                                  {
+                                    '$$typeof': Symbol(react.transitional.element),
+                                    type: [Function: CardTitle],
+                                    key: null,
+                                    props: {
+                                      className: 'text-base',
+                                      children: [
+                                        'Why AboutTrain estimates ',
+                                        0,
+                                        '%'
+                                      ]
+                                    },
+                                    _owner: null,
+                                    _store: {}
+                                  },
+                                  {
+                                    '$$typeof': Symbol(react.transitional.element),
+                                    type: [Function: CardDescription],
+                                    key: null,
+                                    props: {
+                                      className: 'space-y-1',
+                                      children: [
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'span',
+                                          key: null,
+                                          props: {
+                                            children: [
+                                              'Confidence: ',
+                                              {
+                                                '$$typeof': Symbol(react.transitional.element),
+                                                type: 'strong',
+                                                key: null,
+                                                props: { children: 'High' },
+                                                _owner: null,
+                                                _store: {}
+                                              }
+                                            ]
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        },
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'span',
+                                          key: null,
+                                          props: {
+                                            className: 'ml-3',
+                                            children: [
+                                              'Journey: ',
+                                              'Thu, 15 Oct 2026'
+                                            ]
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        }
+                                      ]
+                                    },
+                                    _owner: null,
+                                    _store: {}
+                                  }
+                                ]
+                              },
+                              _owner: null,
+                              _store: {}
+                            },
+                            {
+                              '$$typeof': Symbol(react.transitional.element),
+                              type: [Function: CardContent],
+                              key: null,
+                              props: {
+                                className: 'space-y-4',
+                                children: [
+                                  {
+                                    '$$typeof': Symbol(react.transitional.element),
+                                    type: [Function: PredictionExplainer],
+                                    key: null,
+                                    props: {
+                                      factors: [
+                                        {
+                                          label: 'Current Status',
+                                          impact: 'Negative',
+                                          description: 'Booking is currently unavailable (REGRET). No seats or waitlist quota remaining.'
+                                        }
+                                      ]
+                                    },
+                                    _owner: null,
+                                    _store: {}
+                                  },
+                                  {
+                                    '$$typeof': Symbol(react.transitional.element),
+                                    type: 'div',
+                                    key: null,
+                                    props: {
+                                      className: 'mt-4 pt-4 border-t',
+                                      children: [
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'h4',
+                                          key: null,
+                                          props: {
+                                            className: 'text-sm font-semibold mb-2 text-secondary-foreground',
+                                            children: 'Historical Clearance Data'
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        },
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'div',
+                                          key: null,
+                                          props: {
+                                            className: 'grid grid-cols-3 gap-4 text-center',
+                                            children: [
+                                              {
+                                                '$$typeof': Symbol(react.transitional.element),
+                                                type: 'div',
+                                                key: null,
+                                                props: {
+                                                  className: 'bg-secondary/50 rounded-lg p-3',
+                                                  children: [
+                                                    {
+                                                      '$$typeof': Symbol(react.transitional.element),
+                                                      type: 'div',
+                                                      key: null,
+                                                      props: {
+                                                        className: 'text-xl font-bold text-foreground',
+                                                        children: 42
+                                                      },
+                                                      _owner: null,
+                                                      _store: {}
+                                                    },
+                                                    {
+                                                      '$$typeof': Symbol(react.transitional.element),
+                                                      type: 'div',
+                                                      key: null,
+                                                      props: {
+                                                        className: 'text-xs text-muted-foreground mt-0.5',
+                                                        children: 'Samples'
+                                                      },
+                                                      _owner: null,
+                                                      _store: {}
+                                                    }
+                                                  ]
+                                                },
+                                                _owner: null,
+                                                _store: {}
+                                              },
+                                              {
+                                                '$$typeof': Symbol(react.transitional.element),
+                                                type: 'div',
+                                                key: null,
+                                                props: {
+                                                  className: 'bg-secondary/50 rounded-lg p-3',
+                                                  children: [
+                                                    {
+                                                      '$$typeof': Symbol(react.transitional.element),
+                                                      type: 'div',
+                                                      key: null,
+                                                      props: {
+                                                        className: 'text-xl font-bold text-emerald-700',
+                                                        children: [ 69, '%' ]
+                                                      },
+                                                      _owner: null,
+                                                      _store: {}
+                                                    },
+                                                    {
+                                                      '$$typeof': Symbol(react.transitional.element),
+                                                      type: 'div',
+                                                      key: null,
+                                                      props: {
+                                                        className: 'text-xs text-muted-foreground mt-0.5',
+                                                        children: 'Clearance rate'
+                                                      },
+                                                      _owner: null,
+                                                      _store: {}
+                                                    }
+                                                  ]
+                                                },
+                                                _owner: null,
+                                                _store: {}
+                                              },
+                                              {
+                                                '$$typeof': Symbol(react.transitional.element),
+                                                type: 'div',
+                                                key: null,
+                                                props: {
+                                                  className: 'bg-secondary/50 rounded-lg p-3',
+                                                  children: [
+                                                    {
+                                                      '$$typeof': Symbol(react.transitional.element),
+                                                      type: 'div',
+                                                      key: null,
+                                                      props: {
+                                                        className: 'text-xl font-bold text-foreground',
+                                                        children: 'WL 22'
+                                                      },
+                                                      _owner: null,
+                                                      _store: {}
+                                                    },
+                                                    {
+                                                      '$$typeof': Symbol(react.transitional.element),
+                                                      type: 'div',
+                                                      key: null,
+                                                      props: {
+                                                        className: 'text-xs text-muted-foreground mt-0.5',
+                                                        children: 'Avg cleared WL'
+                                                      },
+                                                      _owner: null,
+                                                      _store: {}
+                                                    }
+                                                  ]
+                                                },
+                                                _owner: null,
+                                                _store: {}
+                                              }
+                                            ]
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        },
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'p',
+                                          key: null,
+                                          props: {
+                                            className: 'text-xs text-muted-foreground mt-2 italic',
+                                            children: [
+                                              'Source: ',
+                                              'Demo mock data — not real historical records'
+                                            ]
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        }
+                                      ]
+                                    },
+                                    _owner: null,
+                                    _store: {}
+                                  },
+                                  {
+                                    '$$typeof': Symbol(react.transitional.element),
+                                    type: 'div',
+                                    key: null,
+                                    props: {
+                                      className: 'pt-3 border-t text-xs text-muted-foreground space-y-1',
+                                      children: {
+                                        '$$typeof': Symbol(react.transitional.element),
+                                        type: 'p',
+                                        key: null,
+                                        props: {
+                                          children: [
+                                            {
+                                              '$$typeof': Symbol(react.transitional.element),
+                                              type: 'strong',
+                                              key: null,
+                                              props: {
+                                                children: 'About this estimate:'
+                                              },
+                                              _owner: null,
+                                              _store: {}
+                                            },
+                                            ' Probability is computed by a deterministic heuristic using WL/RAC position, days to journey, class, quota, and where available, historical clearance rates. This is not a trained ML model. Results improve as historical data grows.'
+                                          ]
+                                        },
+                                        _owner: null,
+                                        _store: {}
+                                      }
+                                    },
+                                    _owner: null,
+                                    _store: {}
+                                  }
+                                ]
+                              },
+                              _owner: null,
+                              _store: {}
+                            }
+                          ]
+                        },
+                        _owner: null,
+                        _store: {}
+                      }
+                    },
+                    _owner: null,
+                    _store: {}
+                  },
+                  {
+                    '$$typeof': Symbol(react.transitional.element),
+                    type: [Function: TabsContent],
+                    key: null,
+                    props: {
+                      value: 'alternatives',
+                      className: 'mt-5',
+                      children: {
+                        '$$typeof': Symbol(react.transitional.element),
+                        type: [Function: Card],
+                        key: null,
+                        props: {
+                          children: [
+                            {
+                              '$$typeof': Symbol(react.transitional.element),
+                              type: [Function: CardHeader],
+                              key: null,
+                              props: {
+                                className: 'pb-3',
+                                children: [
+                                  {
+                                    '$$typeof': Symbol(react.transitional.element),
+                                    type: [Function: CardTitle],
+                                    key: null,
+                                    props: {
+                                      className: 'text-base',
+                                      children: 'Alternative trains on this route'
+                                    },
+                                    _owner: null,
+                                    _store: {}
+                                  },
+                                  {
+                                    '$$typeof': Symbol(react.transitional.element),
+                                    type: [Function: CardDescription],
+                                    key: null,
+                                    props: {
+                                      children: 'Compare options. Better confirmation probability does not guarantee a seat.'
+                                    },
+                                    _owner: null,
+                                    _store: {}
+                                  }
+                                ]
+                              },
+                              _owner: null,
+                              _store: {}
+                            },
+                            {
+                              '$$typeof': Symbol(react.transitional.element),
+                              type: [Function: CardContent],
+                              key: null,
+                              props: {
+                                className: 'space-y-3',
+                                children: {
+                                  '$$typeof': Symbol(react.transitional.element),
+                                  type: 'p',
+                                  key: null,
+                                  props: {
+                                    className: 'text-sm text-muted-foreground',
+                                    children: 'No alternative trains found in current dataset.'
+                                  },
+                                  _owner: null,
+                                  _store: {}
+                                }
+                              },
+                              _owner: null,
+                              _store: {}
+                            }
+                          ]
+                        },
+                        _owner: null,
+                        _store: {}
+                      }
+                    },
+                    _owner: null,
+                    _store: {}
+                  },
+                  {
+                    '$$typeof': Symbol(react.transitional.element),
+                    type: [Function: TabsContent],
+                    key: null,
+                    props: {
+                      value: 'info',
+                      className: 'mt-5',
+                      children: {
+                        '$$typeof': Symbol(react.transitional.element),
+                        type: [Function: Card],
+                        key: null,
+                        props: {
+                          children: [
+                            {
+                              '$$typeof': Symbol(react.transitional.element),
+                              type: [Function: CardHeader],
+                              key: null,
+                              props: {
+                                className: 'pb-3',
+                                children: {
+                                  '$$typeof': Symbol(react.transitional.element),
+                                  type: [Function: CardTitle],
+                                  key: null,
+                                  props: {
+                                    className: 'text-base',
+                                    children: [
+                                      '12926',
+                                      ' — ',
+                                      'Paschim Express'
+                                    ]
+                                  },
+                                  _owner: null,
+                                  _store: {}
+                                }
+                              },
+                              _owner: null,
+                              _store: {}
+                            },
+                            {
+                              '$$typeof': Symbol(react.transitional.element),
+                              type: [Function: CardContent],
+                              key: null,
+                              props: {
+                                className: 'space-y-4',
+                                children: [
+                                  {
+                                    '$$typeof': Symbol(react.transitional.element),
+                                    type: 'div',
+                                    key: null,
+                                    props: {
+                                      className: 'grid grid-cols-[auto_1fr] gap-x-8 gap-y-2 text-sm',
+                                      children: [
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'span',
+                                          key: null,
+                                          props: {
+                                            className: 'text-muted-foreground',
+                                            children: 'Type'
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        },
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'span',
+                                          key: null,
+                                          props: {
+                                            className: 'font-medium',
+                                            children: 'Superfast'
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        },
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'span',
+                                          key: null,
+                                          props: {
+                                            className: 'text-muted-foreground',
+                                            children: 'Runs on'
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        },
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'span',
+                                          key: null,
+                                          props: {
+                                            className: 'font-medium',
+                                            children: 'Daily'
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        },
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'span',
+                                          key: null,
+                                          props: {
+                                            className: 'text-muted-foreground',
+                                            children: 'Origin'
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        },
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'span',
+                                          key: null,
+                                          props: {
+                                            className: 'font-medium',
+                                            children: 'ASR'
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        },
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'span',
+                                          key: null,
+                                          props: {
+                                            className: 'text-muted-foreground',
+                                            children: 'Destination'
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        },
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'span',
+                                          key: null,
+                                          props: {
+                                            className: 'font-medium',
+                                            children: 'BCT'
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        }
+                                      ]
+                                    },
+                                    _owner: null,
+                                    _store: {}
+                                  },
+                                  {
+                                    '$$typeof': Symbol(react.transitional.element),
+                                    type: 'div',
+                                    key: null,
+                                    props: {
+                                      className: 'pt-2 border-t text-xs text-muted-foreground',
+                                      children: [
+                                        'Schedule and route details are illustrative in this demo. Verify on ',
+                                        {
+                                          '$$typeof': Symbol(react.transitional.element),
+                                          type: 'a',
+                                          key: null,
+                                          props: {
+                                            href: 'https://www.irctc.co.in',
+                                            target: '_blank',
+                                            rel: 'noopener noreferrer',
+                                            className: 'underline text-primary',
+                                            children: 'IRCTC'
+                                          },
+                                          _owner: null,
+                                          _store: {}
+                                        },
+                                        ' or NTES before travel.'
+                                      ]
+                                    },
+                                    _owner: null,
+                                    _store: {}
+                                  }
+                                ]
+                              },
+                              _owner: null,
+                              _store: {}
+                            }
+                          ]
+                        },
+                        _owner: null,
+                        _store: {}
+                      }
+                    },
+                    _owner: null,
+                    _store: {}
+                  }
+                ]
+              },
+              _owner: null,
+              _store: {}
+            }
+          ]
+        },
+        _owner: null,
+        _store: {}
+      }
+    ]
+  },
+  _owner: null,
+  _store: {}
+}

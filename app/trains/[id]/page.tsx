@@ -22,10 +22,29 @@ export default async function TrainDetailsPage({ params, searchParams }: PagePro
   const sp = await searchParams;
 
   const dateStr = typeof sp.date === 'string' ? sp.date : '';
-  const classCode = typeof sp.class === 'string' ? sp.class : '3A';
-  const quota = typeof sp.quota === 'string' ? sp.quota : 'GN';
+  const classCode = typeof sp.class === 'string' ? sp.class : '';
+  const quota = typeof sp.quota === 'string' ? sp.quota : '';
   const fromCode = typeof sp.from === 'string' ? sp.from : '';
   const toCode = typeof sp.to === 'string' ? sp.to : '';
+
+  if (!dateStr || !classCode || !quota || !fromCode || !toCode) {
+    return (
+      <div className="flex min-h-screen flex-col bg-secondary/30">
+        <Navbar />
+        <main className="flex-1 container px-4 py-16 max-w-4xl flex flex-col items-center justify-center text-center">
+          <AlertCircle className="h-10 w-10 text-muted-foreground mb-3" />
+          <h3 className="font-semibold text-lg mb-1">Missing journey details</h3>
+          <p className="text-muted-foreground text-sm max-w-md">
+            Full analysis requires complete search context including journey date, class, and quota.
+          </p>
+          <div className="mt-6 flex gap-3">
+            <Link href="/planner" className={buttonVariants()}>Plan Journey</Link>
+            <Link href="/trains" className={buttonVariants({ variant: "outline" })}>Search Results</Link>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   const provider = getDataProvider();
   const availProvider = getAvailabilityProvider();
@@ -36,7 +55,7 @@ export default async function TrainDetailsPage({ params, searchParams }: PagePro
     toCode ? provider.getStation(toCode) : null,
   ]);
 
-  const journeyDate = dateStr || format(new Date(), 'yyyy-MM-dd');
+  const journeyDate = dateStr;
   const daysToJourney = Math.max(0, differenceInDays(parseISO(journeyDate), new Date()));
 
   // 1. Find train using provider
@@ -128,7 +147,7 @@ export default async function TrainDetailsPage({ params, searchParams }: PagePro
 
   // Alternatives: keep simple fallback for UI purposes
   const alternatives = mockAvailability
-    .filter(a => a.train_id !== result!.train.id && a.from_station === avail!.from_station)
+    .filter(a => a.train_id !== result!.train.id && a.from_station === resolvedFrom.station_code)
     .map(a => {
       const altTrain = mockTrains.find(t => t.id === a.train_id)!;
       const altPred = calculatePrediction({
