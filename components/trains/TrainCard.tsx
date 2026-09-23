@@ -125,7 +125,7 @@ export function TrainCard({ result }: TrainCardProps) {
 
               {isConfirmed ? (
                 <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2">
-                  Seat availability confirmed. Book promptly on IRCTC to secure your ticket.
+                  Seat availability confirmed. Book promptly through official channels to secure your ticket.
                 </div>
               ) : prediction ? (
                 <PredictionGauge

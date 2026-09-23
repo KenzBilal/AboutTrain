@@ -45,7 +45,8 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight mb-4">Why choose AboutTrain?</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              We analyze millions of historical PNR records to give you the most accurate waitlist predictions.
+              We check real current railway availability to provide data-driven estimates. 
+              Historical data collection is ongoing to build these estimates, which are guides rather than guarantees.
             </p>
           </div>
 
@@ -97,7 +98,7 @@ export default function Home() {
             <span className="font-bold text-lg text-primary tracking-tight">AboutTrain</span>
           </div>
           <p className="text-sm text-muted-foreground">
-            © 2026 AboutTrain. AI-powered Railway Decisions.
+            © 2026 AboutTrain. Data-driven Railway Estimates.
           </p>
         </div>
       </footer>

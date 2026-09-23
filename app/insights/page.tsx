@@ -51,7 +51,7 @@ export default async function InsightsPage() {
           <span>
             {isDemoMode()
               ? <><strong className="text-foreground">Demo data:</strong> All figures shown are from a small illustrative dataset with {clearanceStats.reduce((s, c) => s + c.hist.totalSamples, 0)} historical samples. These numbers are not representative of actual Indian Railways confirmation rates.</>
-              : <><strong className="text-foreground">Live data:</strong> Figures computed from historical_outcomes table. Accuracy improves as more data is ingested.</>
+              : <><strong className="text-foreground">Live data:</strong> Figures computed from historical_outcomes table. Estimates improve as more data is ingested.</>
             }
           </span>
         </div>

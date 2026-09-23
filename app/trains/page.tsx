@@ -143,7 +143,7 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
         <div className="flex items-start gap-2 text-xs text-muted-foreground border border-border rounded-lg px-4 py-2.5 mb-5">
           <Clock className="h-3.5 w-3.5 mt-0.5 shrink-0" />
           <span>
-            Availability and confirmation estimates are {getAvailabilityProvider()?.isDemo ? <strong>illustrative demo data</strong> : <>sourced from <strong>{getAvailabilityProvider()?.providerName || 'Live IRCTC/NTES providers'}</strong></>}.
+            Availability and confirmation estimates are {getAvailabilityProvider()?.isDemo ? <strong>illustrative demo data</strong> : <>sourced from <strong>{getAvailabilityProvider()?.providerName || 'Live third-party availability providers'}</strong></>}.
             Estimates are not guarantees. Always verify on{' '}
             <a href="https://www.irctc.co.in" target="_blank" rel="noopener noreferrer" className="underline text-primary">
               IRCTC
