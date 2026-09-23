@@ -11,6 +11,8 @@ import { differenceInDays, parseISO } from "date-fns";
 interface TrainCardProps {
   result: TrainResult;
   searchContext?: {
+    from: string;
+    to: string;
     date: string;
     classCode: string;
     quota: string;
@@ -145,12 +147,30 @@ export function TrainCard({ result, searchContext }: TrainCardProps) {
             </div>
 
             <div className="pt-4 mt-auto">
-              <Link
-                href={`/trains/${train.id}?from=${fromStation.station_code}&to=${toStation.station_code}&date=${availability?.journey_date || searchContext?.date || ''}&class=${availability?.class_code || searchContext?.classCode || ''}&quota=${availability?.quota || searchContext?.quota || ''}`}
-                className={buttonVariants({ className: "w-full text-center" })}
-              >
-                Full Analysis
-              </Link>
+              {(() => {
+                // Prefer explicit searchContext (from URL) as canonical source.
+                // Only fall back to availability fields when searchContext values are missing.
+                const from = searchContext?.from || fromStation.station_code;
+                const to = searchContext?.to || toStation.station_code;
+                const date = searchContext?.date || availability?.journey_date || '';
+                const classCode = searchContext?.classCode || availability?.class_code || '';
+                const quota = searchContext?.quota || availability?.quota || '';
+                const params = new URLSearchParams({
+                  from,
+                  to,
+                  date,
+                  class: classCode,
+                  quota,
+                });
+                return (
+                  <Link
+                    href={`/trains/${train.id}?${params.toString()}`}
+                    className={buttonVariants({ className: "w-full text-center" })}
+                  >
+                    Full Analysis
+                  </Link>
+                );
+              })()}
             </div>
           </div>
         </div>

@@ -195,7 +195,7 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
               <TrainCard 
                 key={result.availability?.id ?? result.train.id} 
                 result={result} 
-                searchContext={{ date: dateStr, classCode, quota }}
+                searchContext={{ from: fromCode, to: toCode, date: dateStr, classCode, quota }}
               />
             ))}
           </div>
