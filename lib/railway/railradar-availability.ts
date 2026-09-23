@@ -22,9 +22,7 @@ export class RailRadarAvailabilityProvider implements AvailabilityProvider {
             'Authorization': `Bearer ${this.apiKey}`,
             'Accept': 'application/json'
           },
-          next: {
-            revalidate: 1800 // 30 minutes
-          }
+          cache: 'no-store',
         }
       );
 
