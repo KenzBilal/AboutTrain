@@ -143,7 +143,7 @@ describe('TrainCard Full Analysis URL Construction', () => {
     assert.strictEqual(parsed.searchParams.get('date'), '');
   });
 
-  // Exact scenario from the bug report: PGW -> NDLS, 2026-10-01, 3A, GN
+  // Exact scenario from the bug report: PGW → NDLS, 2026-10-01, 3A, GN
   test('Exact bug scenario: PGW → NDLS with date/class/quota in searchContext', () => {
     const url = buildFullAnalysisUrl(
       '12925',
@@ -157,5 +157,55 @@ describe('TrainCard Full Analysis URL Construction', () => {
     assert.ok(url.includes('date=2026-10-01'), `URL missing date=2026-10-01: ${url}`);
     assert.ok(url.includes('class=3A'), `URL missing class=3A: ${url}`);
     assert.ok(url.includes('quota=GN'), `URL missing quota=GN: ${url}`);
+  });
+
+  // Alternate journey: AWL → NDLS, 2026-10-02, SL, GN
+  test('Alternate journey: AWL → NDLS with different date/class produces correct URL', () => {
+    const url = buildFullAnalysisUrl(
+      '12314',
+      'AWL',
+      'NDLS',
+      { from: 'AWL', to: 'NDLS', date: '2026-10-02', classCode: 'SL', quota: 'GN' },
+      null,
+    );
+    const parsed = new URL(url, 'http://localhost');
+    assert.strictEqual(parsed.searchParams.get('from'), 'AWL', 'from=AWL');
+    assert.strictEqual(parsed.searchParams.get('to'), 'NDLS', 'to=NDLS');
+    assert.strictEqual(parsed.searchParams.get('date'), '2026-10-02', 'date=2026-10-02');
+    assert.strictEqual(parsed.searchParams.get('class'), 'SL', 'class=SL');
+    assert.strictEqual(parsed.searchParams.get('quota'), 'GN', 'quota=GN');
+  });
+
+  // THE ACTUAL PRODUCTION BUG: detail page rendered TrainCard WITHOUT searchContext.
+  // Without searchContext, and without availability, all params become empty strings.
+  // This test documents the broken behavior and confirms the fix (pass searchContext always).
+  test('Root cause: TrainCard on detail page without searchContext produces broken URL', () => {
+    // Before fix: detail page called <TrainCard result={result} /> — no searchContext.
+    // This causes date/class/quota to be '' because availability is also null in production.
+    const brokenUrl = buildFullAnalysisUrl('12925', 'PGW', 'NDLS', undefined, null);
+    const parsed = new URL(brokenUrl, 'http://localhost');
+    // from/to come from station codes (correct), but date/class/quota are empty (broken)
+    assert.strictEqual(parsed.searchParams.get('from'), 'PGW');
+    assert.strictEqual(parsed.searchParams.get('to'), 'NDLS');
+    assert.strictEqual(parsed.searchParams.get('date'), '', 'Without searchContext, date is empty — this was the bug');
+    assert.strictEqual(parsed.searchParams.get('class'), '', 'Without searchContext, class is empty — this was the bug');
+    assert.strictEqual(parsed.searchParams.get('quota'), '', 'Without searchContext, quota is empty — this was the bug');
+  });
+
+  test('Fix verified: detail page TrainCard WITH searchContext produces correct URL', () => {
+    // After fix: detail page calls <TrainCard result={result} searchContext={{ from, to, date, classCode, quota }} />
+    const fixedUrl = buildFullAnalysisUrl(
+      '12925',
+      'PGW',
+      'NDLS',
+      { from: 'PGW', to: 'NDLS', date: '2026-10-01', classCode: '3A', quota: 'GN' },
+      null, // still no availability in production
+    );
+    const parsed = new URL(fixedUrl, 'http://localhost');
+    assert.strictEqual(parsed.searchParams.get('from'), 'PGW');
+    assert.strictEqual(parsed.searchParams.get('to'), 'NDLS');
+    assert.strictEqual(parsed.searchParams.get('date'), '2026-10-01', 'With searchContext, date is preserved');
+    assert.strictEqual(parsed.searchParams.get('class'), '3A', 'With searchContext, class is preserved');
+    assert.strictEqual(parsed.searchParams.get('quota'), 'GN', 'With searchContext, quota is preserved');
   });
 });

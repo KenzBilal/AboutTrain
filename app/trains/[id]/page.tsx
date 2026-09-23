@@ -193,7 +193,10 @@ export default async function TrainDetailsPage({ params, searchParams }: PagePro
 
         {/* Train Card */}
         <div className="mb-6">
-          <TrainCard result={result} />
+          <TrainCard
+            result={result}
+            searchContext={{ from: fromCode, to: toCode, date: dateStr, classCode, quota }}
+          />
         </div>
 
         {/* Analysis Tabs */}
