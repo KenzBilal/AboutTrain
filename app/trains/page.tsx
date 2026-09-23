@@ -93,7 +93,8 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
       <Navbar />
 
       {/* Journey Header */}
-      <div className="bg-primary text-primary-foreground py-5">
+      {!missingInputs && (
+        <div className="bg-primary text-primary-foreground py-5">
         <div className="container px-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
@@ -118,7 +119,7 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
             </Link>
           </div>
         </div>
-      </div>
+      )}
 
       <main className="flex-1 container px-4 py-6 max-w-4xl">
         {/* Demo mode notice */}
@@ -148,17 +149,19 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
         )}
 
         {/* Data disclaimer */}
-        <div className="flex items-start gap-2 text-xs text-muted-foreground border border-border rounded-lg px-4 py-2.5 mb-5">
-          <Clock className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-          <span>
-            Availability and confirmation estimates are {getAvailabilityProvider()?.isDemo ? <strong>illustrative demo data</strong> : <>sourced from <strong>{getAvailabilityProvider()?.providerName || 'Live third-party availability providers'}</strong></>}.
-            Estimates are not guarantees. Always verify on{' '}
-            <a href="https://www.irctc.co.in" target="_blank" rel="noopener noreferrer" className="underline text-primary">
-              IRCTC
-            </a>{' '}
-            before booking.
-          </span>
-        </div>
+        {!missingInputs && (
+          <div className="flex items-start gap-2 text-xs text-muted-foreground border border-border rounded-lg px-4 py-2.5 mb-5">
+            <Clock className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+            <span>
+              Availability and confirmation estimates are {getAvailabilityProvider()?.isDemo ? <strong>illustrative demo data</strong> : <>sourced from <strong>{getAvailabilityProvider()?.providerName || 'Live third-party availability providers'}</strong></>}.
+              Estimates are not guarantees. Always verify on{' '}
+              <a href="https://www.irctc.co.in" target="_blank" rel="noopener noreferrer" className="underline text-primary">
+                IRCTC
+              </a>{' '}
+              before booking.
+            </span>
+          </div>
+        )}
 
         {/* Error state */}
         {searchError && (

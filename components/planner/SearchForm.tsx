@@ -34,11 +34,7 @@ export function SearchForm() {
   const router = useRouter();
   const [fromStation, setFromStation] = useState<Station | null>(null);
   const [toStation, setToStation] = useState<Station | null>(null);
-  const [date, setDate] = useState<Date>(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 7); // default: 1 week from today
-    return d;
-  });
+  const [date, setDate] = useState<Date | undefined>(undefined);
   const [classCode, setClassCode] = useState("3A");
   const [quota, setQuota] = useState("GN");
   const [passengers, setPassengers] = useState("1");
@@ -57,6 +53,10 @@ export function SearchForm() {
 
     if (!fromStation || !toStation) {
       setError("Please select both origin and destination stations.");
+      return;
+    }
+    if (!date) {
+      setError("Please select a journey date.");
       return;
     }
     if (fromStation.station_code === toStation.station_code) {
@@ -121,11 +121,12 @@ export function SearchForm() {
             <PopoverTrigger
               className={cn(
                 buttonVariants({ variant: "outline" }),
-                "w-full h-11 justify-start text-left font-normal"
+                "w-full h-11 justify-start text-left font-normal",
+                !date && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-              {format(date, "dd MMM yyyy")}
+              {date ? format(date, "dd MMM yyyy") : <span>Pick a date</span>}
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
