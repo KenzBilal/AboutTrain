@@ -14,17 +14,25 @@ export class RailRadarAvailabilityProvider implements AvailabilityProvider {
     const { trainId, fromStation, toStation, journeyDate, classCode, quota } = options;
 
     try {
-      // 30 minute cache TTL
-      const res = await fetch(
-        `https://api.railradar.in/v1/trains/${trainId}/seats?from=${fromStation}&to=${toStation}&class=${classCode}&quota=${quota}&date=${journeyDate}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
-            'Accept': 'application/json'
-          },
-          cache: 'no-store',
-        }
-      );
+      // 4s timeout — Vercel Hobby functions have a 10s limit and we run many concurrent requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      let res: Response;
+      try {
+        res = await fetch(
+          `https://api.railradar.in/v1/trains/${trainId}/seats?from=${fromStation}&to=${toStation}&class=${classCode}&quota=${quota}&date=${journeyDate}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${this.apiKey}`,
+              'Accept': 'application/json'
+            },
+            cache: 'no-store',
+            signal: controller.signal,
+          }
+        );
+      } finally {
+        clearTimeout(timeoutId);
+      }
 
       if (!res.ok) {
         console.error(`[RailRadar] API Error ${res.status}: ${res.statusText}`);

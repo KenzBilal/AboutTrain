@@ -11,6 +11,7 @@ interface PageProps {
 }
 
 export const dynamic = 'force-dynamic'; // always fresh — availability data changes
+export const maxDuration = 30; // seconds — needed for concurrent RailRadar availability fetches
 
 export default async function SearchResultsPage({ searchParams }: PageProps) {
   const sp = await searchParams;
