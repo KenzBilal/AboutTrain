@@ -51,7 +51,7 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
         await Promise.all(results.map(async (result) => {
           try {
             const avail = await availProvider.getAvailability({
-              trainId: result.train.id,
+              trainId: result.train.train_number, // RailRadar needs train number not UUID
               fromStation: fromCode,
               toStation: toCode,
               journeyDate: dateStr,
