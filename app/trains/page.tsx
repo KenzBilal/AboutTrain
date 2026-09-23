@@ -46,9 +46,10 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
       });
 
       const availProvider = getAvailabilityProvider();
+      console.log('[trains/page] availProvider:', availProvider?.providerName ?? 'null', '| dateStr:', dateStr, '| classCode:', classCode);
       if (availProvider && dateStr && classCode) {
         // Fetch live availability for all trains concurrently
-        await Promise.all(results.map(async (result) => {
+        const availResults = await Promise.all(results.map(async (result) => {
           try {
             const avail = await availProvider.getAvailability({
               trainId: result.train.train_number, // RailRadar needs train number not UUID
@@ -58,13 +59,19 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
               classCode,
               quota,
             });
-            if (avail) {
-              result.availability = avail;
-            }
+            console.log(`[trains/page] ${result.train.train_number}: avail=${avail ? avail.status : 'null'}`);
+            return { result, avail };
           } catch (e) {
-            console.error(`Failed to fetch availability for ${result.train.id}`, e);
+            console.error(`Failed to fetch availability for ${result.train.train_number}`, e);
+            return { result, avail: null };
           }
         }));
+        // Apply availability to results
+        for (const { result, avail } of availResults) {
+          if (avail) {
+            result.availability = avail;
+          }
+        }
       }
     } catch (err) {
       console.error('[trains/search] Error:', err);
