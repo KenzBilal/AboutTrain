@@ -55,8 +55,8 @@ export function calculatePrediction(input: PredictionInput): Prediction | undefi
   const factors: PredictionFactor[] = [];
 
   // Enforce real data:
-  if (!status || status === 'UNKNOWN') {
-    return undefined; // No real live data available
+  if (!status || status === 'UNKNOWN' || !input.journeyDate) {
+    return undefined; // No real live data available or missing date
   }
 
   // ── 1. STATUS BASE ──────────────────────────────────────────────────────────

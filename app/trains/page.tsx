@@ -23,7 +23,7 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
   const provider = getDataProvider();
 
   // Validate inputs
-  const missingInputs = !fromCode || !toCode;
+  const missingInputs = !fromCode || !toCode || !dateStr;
 
   let results: Awaited<ReturnType<typeof provider.searchTrains>> = [];
   let fromStation = null;
@@ -166,7 +166,7 @@ export default async function SearchResultsPage({ searchParams }: PageProps) {
           <div className="flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-border rounded-xl">
             <AlertCircle className="h-10 w-10 text-muted-foreground mb-3" />
             <h3 className="font-semibold text-lg mb-1">Missing search criteria</h3>
-            <p className="text-muted-foreground text-sm">Enter origin and destination to find trains.</p>
+            <p className="text-muted-foreground text-sm">Enter origin, destination, and journey date to find trains.</p>
             <Link href="/planner" className={buttonVariants({ className: "mt-4" })}>Go to Planner</Link>
           </div>
         )}

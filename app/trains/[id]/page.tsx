@@ -90,30 +90,39 @@ export default async function TrainDetailsPage({ params, searchParams }: PagePro
     }
   }
 
-  // Fallback to mock availability if no live provider or if it failed
-  if (!avail) {
+  // Fallback to mock availability only in demo mode
+  if (!avail && provider.isDemo) {
     avail = mockAvailability.find(a => a.train_id === result!.train.id && a.class_code === classCode) ?? mockAvailability[0];
   }
 
-  result.availability = { ...avail, journey_date: journeyDate, class_code: classCode, quota };
+  let historical = null;
+  let prediction = null;
 
-  // 3. Get historical clearance
-  const historical = await provider.getHistoricalClearance(result.train.id, classCode, quota);
+  if (avail) {
+    result.availability = { ...avail, journey_date: journeyDate, class_code: classCode, quota };
 
-  const prediction = calculatePrediction({
-    trainId: result.train.id,
-    journeyDate,
-    classCode,
-    quota,
-    status: result.availability.status,
-    waitlistNumber: result.availability.waitlist_number,
-    racNumber: result.availability.rac_number,
-    daysToJourney,
-    historicalClearanceRate: historical?.clearanceRate,
-    historicalSampleCount: historical?.totalSamples,
-  });
+    // 3. Get historical clearance
+    historical = await provider.getHistoricalClearance(result.train.id, classCode, quota);
 
-  result.prediction = prediction;
+    prediction = calculatePrediction({
+      trainId: result.train.id,
+      journeyDate,
+      classCode,
+      quota,
+      status: result.availability.status,
+      waitlistNumber: result.availability.waitlist_number,
+      racNumber: result.availability.rac_number,
+      daysToJourney,
+      historicalClearanceRate: historical?.clearanceRate,
+      historicalSampleCount: historical?.totalSamples,
+    });
+
+    result.prediction = prediction;
+  } else {
+    // Availability is completely unavailable
+    result.availability = undefined;
+    result.prediction = undefined;
+  }
 
   const { train, fromStation: resolvedFrom, toStation: resolvedTo } = result;
 
