@@ -1,7 +1,7 @@
 import { configure, getAvailability } from 'railkit';
 import { format, parseISO } from 'date-fns';
-import type { AvailabilityProvider, AvailabilityResult } from './availability.interface';
-import type { TrainSearchOptions } from './provider.interface';
+import type { AvailabilityProvider, AvailabilityRequestOptions } from './availability.interface';
+import type { AvailabilitySnapshot } from '@/types';
 
 export class RailKitAvailabilityProvider implements AvailabilityProvider {
   readonly providerName = 'RailKit API';
@@ -11,8 +11,8 @@ export class RailKitAvailabilityProvider implements AvailabilityProvider {
     configure(apiKey);
   }
 
-  async getAvailability(opts: TrainSearchOptions): Promise<AvailabilityResult | null> {
-    const dateStr = format(parseISO(opts.date), 'dd-MM-yyyy');
+  async getAvailability(opts: AvailabilityRequestOptions): Promise<AvailabilitySnapshot | null> {
+    const dateStr = format(parseISO(opts.journeyDate), 'dd-MM-yyyy');
 
     try {
       const result = await getAvailability(
@@ -32,9 +32,9 @@ export class RailKitAvailabilityProvider implements AvailabilityProvider {
       const fare = result.data.fare;
 
       return {
-        id: `rk-${opts.trainId}-${opts.date}-${opts.classCode}-${opts.quota}-${Date.now()}`,
+        id: `rk-${opts.trainId}-${opts.journeyDate}-${opts.classCode}-${opts.quota}-${Date.now()}`,
         train_id: opts.trainId,
-        journey_date: opts.date,
+        journey_date: opts.journeyDate,
         class_code: opts.classCode,
         quota: opts.quota,
         status: availInfo.availabilityText,
@@ -50,19 +50,19 @@ export class RailKitAvailabilityProvider implements AvailabilityProvider {
     }
   }
 
-  private extractWaitlistNumber(status: string): number | null {
+  private extractWaitlistNumber(status: string): number | undefined {
     if (status.includes('WL')) {
       const match = status.match(/WL\s*(\d+)/i) || status.match(/W\/L\s*(\d+)/i);
       if (match) return parseInt(match[1], 10);
     }
-    return null;
+    return undefined;
   }
 
-  private extractRacNumber(status: string): number | null {
+  private extractRacNumber(status: string): number | undefined {
     if (status.includes('RAC')) {
       const match = status.match(/RAC\s*(\d+)/i);
       if (match) return parseInt(match[1], 10);
     }
-    return null;
+    return undefined;
   }
 }
