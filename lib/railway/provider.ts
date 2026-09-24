@@ -18,6 +18,7 @@ import { SupabaseRailwayDataProvider } from './supabase-provider';
 import type { AvailabilityProvider } from './availability.interface';
 import { MockAvailabilityProvider } from './mock-availability';
 import { RailRadarAvailabilityProvider } from './railradar-availability';
+import { RailKitAvailabilityProvider } from './railkit-availability';
 
 let _provider: RailwayDataProvider | null = null;
 
@@ -46,6 +47,8 @@ export function getAvailabilityProvider(): AvailabilityProvider | null {
 
   if (isDemoMode()) {
     _availProvider = new MockAvailabilityProvider();
+  } else if (process.env.RAILKIT_API_KEY) {
+    _availProvider = new RailKitAvailabilityProvider(process.env.RAILKIT_API_KEY);
   } else if (process.env.RAILRADAR_API_KEY) {
     _availProvider = new RailRadarAvailabilityProvider(process.env.RAILRADAR_API_KEY);
   } else {
