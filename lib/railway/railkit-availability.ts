@@ -34,15 +34,17 @@ export class RailKitAvailabilityProvider implements AvailabilityProvider {
       return {
         id: `rk-${opts.trainId}-${opts.journeyDate}-${opts.classCode}-${opts.quota}-${Date.now()}`,
         train_id: opts.trainId,
+        from_station: opts.fromStation,
+        to_station: opts.toStation,
         journey_date: opts.journeyDate,
         class_code: opts.classCode,
         quota: opts.quota,
-        status: availInfo.availabilityText,
+        status: this.normalizeStatus(availInfo.availabilityText),
         waitlist_number: this.extractWaitlistNumber(availInfo.availabilityText),
         rac_number: this.extractRacNumber(availInfo.availabilityText),
         fare: fare?.totalFare || 0,
         source: this.providerName,
-        last_updated: new Date().toISOString(),
+        captured_at: new Date().toISOString(),
       };
     } catch (e) {
       console.error('[RailKit] API error:', e);
@@ -64,5 +66,15 @@ export class RailKitAvailabilityProvider implements AvailabilityProvider {
       if (match) return parseInt(match[1], 10);
     }
     return undefined;
+  }
+
+  private normalizeStatus(status: string): 'CNF' | 'RAC' | 'WL' | 'AVAILABLE' | 'REGRET' {
+    const s = status.toUpperCase();
+    if (s.includes('REGRET')) return 'REGRET';
+    if (s.includes('AVAILABLE') || s.includes('AVL')) return 'AVAILABLE';
+    if (s.includes('RAC')) return 'RAC';
+    if (s.includes('WL') || s.includes('WAITLIST')) return 'WL';
+    if (s.includes('CNF')) return 'CNF';
+    return 'WL'; // Default fallback
   }
 }
